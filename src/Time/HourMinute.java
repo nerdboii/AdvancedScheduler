@@ -3,35 +3,61 @@ package Time;
 public class HourMinute {
     protected int hour;
     protected int minute;
-    HourMinute(int hour, int minute) {
+    public HourMinute(int hour, int minute) {
         this.hour = hour;
         this.minute = minute;
     }
-    HourMinute(String timeString) {
+    public HourMinute(String timeString) {
         String[] temp;
         temp = timeString.split(":", 2);
         this.hour = Integer.parseInt(temp[0]);
         this.minute = Integer.parseInt(temp[1]);
     }
-    int getHour() {
+    public int getHour() {
         return hour;
     }
-    int getMinute() {
+    public int getMinute() {
         return minute;
     }
-    void setHour(int hour) {
+    public void setHour(int hour) {
         this.hour = hour;
     }
-    void setMinute(int minute) {
+    public void setMinute(int minute) {
         this.minute = minute;
     }
-    String getString() {
+    public String getString() {
         String result = "";
         result = hour + ":" + minute;
         return result;
     }
-    HourMinute getDuration(HourMinute a, HourMinute b) {
+    @Override
+    public HourMinute clone() {
+        HourMinute clone = new HourMinute(0, 0);
+        clone.hour = this.hour;
+        clone.minute = this.minute;
+        return clone;
+    }
+    public void swap(HourMinute a, HourMinute b) {
+        HourMinute temp = new HourMinute(0, 0);
+        temp = a.clone();
+        a = b.clone();
+        b = temp;
+    }
+    public boolean isEqual(HourMinute a) {
+        return this.hour == a.getHour() && this.minute == a.getMinute();
+    }
+    public boolean isSmaller(HourMinute a) {
+        return this.hour < a.getHour() ||
+                (this.hour == a.getHour() && this.minute < a.getMinute());
+    }
+    public boolean isBetween(HourMinute a, HourMinute b) {
+        return !this.isSmaller(a) && this.isSmaller(b);
+    }
+    public HourMinute getDuration(HourMinute a, HourMinute b) {
         HourMinute result = new HourMinute(0, 0);
+        if (a.isSmaller(b))
+            swap(a, b);
+
         int resHour = a.getHour() - b.getHour();
         int resMinute = a.getMinute() - b.getMinute();
         if (resMinute < 0) {
@@ -42,14 +68,7 @@ public class HourMinute {
         result.setMinute(resMinute);
         return result;
     }
-    boolean isEqual(HourMinute a) {
-        return this.hour == a.getHour() && this.minute == a.getMinute();
-    }
-    boolean isSmaller(HourMinute a) {
-        return this.hour < a.getHour() ||
-                (this.hour == a.getHour() && this.minute < a.getMinute());
-    }
-    boolean isBetween(HourMinute a, HourMinute b) {
-        return !this.isSmaller(a) && this.isSmaller(b);
+    public HourMinute getDuration(HourMinute b) {
+        return getDuration(this, b);
     }
 }
